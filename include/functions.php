@@ -7,6 +7,24 @@ include_once dirname(__FILE__)."/constant.php";
 //3days email timef
 
 // session start check
+// if (empty($_SESSION)) {
+// 	$_SESSION['s_login'] = '';
+// 	header("Location:{$rpsc}index.php");
+// }else{
+// 	switch ($_SESSION['s_login']) {
+// 		case '':
+// 			header("Location:{$rpsc}index.php");
+// 			break;
+// 		case 'ng':
+// 			header("Location:{$rpsc}index.php");
+// 			break;
+// 		case 'check':
+// 			header("Location:{$rpsc}index.php");
+// 			break;
+// 	}
+// }
+
+// session start check
 // SESSION START CHECK
 // if (preg_match("/login.php/", $_SERVER["REQUEST_URI"])){
 // 	//none
@@ -62,18 +80,24 @@ function dateNow(){
 	return $months."/".$days.$week;
 }
 
-function adminChk(){
-	if ($_SESSION['auth']==1) {
+function loginChk(){
+	if (empty($_SESSION['s_login'])) {
 		echo<<<EOT
-			<p class="red">このページは管理者のみ利用出来ます。直リンクは避けてください。</p>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="alert alert-danger" role="alert">
+						<button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+						このページはログイン後にご利用出来ます。
+					</div>
+				</div>
+			</div>
 EOT;
+		mainPageContentEnd();
 		mainContentEnd();
-		mainEnd();
-		mainFooter();
-		mainHtmlFooter('');
+		mainPageEnd();
+		mainMsg();
+		mainHtmlFooter();
 		die();
-	}elseif ($_SESSION['auth']==0) {
-		//none
 	}
 }
 

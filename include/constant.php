@@ -3,12 +3,19 @@
 //rnw_root_paas
 // $rp 	= 'http://www.ryukoshanw.co.jp/';
 $rp     = 'http://192.168.1.119/';
+// $rp     = 'http://localhost/';
+
+
 //rnw_portal_root_pass
 // $rps	= $rp.'staff_only/';
-$rps	= $rp.'scode/';
+$rps	= $rp.'scode2/';
+
+
 // $rpsc	= $rp.'staff_only/contents/';
-$rpsc	= $rp.'scode/contents/';
+$rpsc	= $rp.'scode2/contents/';
 // $rps	= $rp.'portal/';
+
+
 //REFERER
 $ref	= $_SERVER["HTTP_REFERER"];
 

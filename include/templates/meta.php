@@ -47,6 +47,12 @@ function mainHtmlFooter(){
 	        <script type='text/javascript' src='../js/plugins/bootstrap/bootstrap-datepicker.js'></script>
 	        <script type="text/javascript" src="../js/plugins/owl/owl.carousel.min.js"></script>
 
+	        <script type="text/javascript" src="../js/plugins/bootstrap/bootstrap-timepicker.min.js"></script>
+	        <script type="text/javascript" src="../js/plugins/bootstrap/bootstrap-colorpicker.js"></script>
+	        <script type="text/javascript" src="../js/plugins/bootstrap/bootstrap-file-input.js"></script>
+	        <script type="text/javascript" src="../js/plugins/bootstrap/bootstrap-select.js"></script>
+	        <script type="text/javascript" src="../js/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+
 	        <script type="text/javascript" src="../js/plugins/moment.min.js"></script>
 	        <script type="text/javascript" src="../js/plugins/daterangepicker/daterangepicker.js"></script>
 	        <!-- END THIS PAGE PLUGINS-->
