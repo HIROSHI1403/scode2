@@ -39,7 +39,7 @@
                                     <span class="label label-success">編集中</span>
                                 <?php endif ?>
                             </h4>
-                            <div class="block">
+                            
                                 <form action="./form_actions.php" method="POST" class="form-horizontal">
                                     <div class="form-group">
                                         <label for="" class="col-sm-3 control-label">名前</label>
@@ -148,19 +148,37 @@ EOT;
         </div>
     </div>
 <?php endif ?>
-                                    <div class="form-group">
+
 <?php if ($_GET['task_edit'] == 'yes'): ?>
+                                    <div class="form-group">
                                         <div class="col-sm-offset-3 col-sm-9">
-                                            <button type="submit" name="F_task_update" class=" btn btn-warning" value="<?php echo $_GET['task_id']; ?>" onclick="return confirm('この内容でよろしいですか？');">タスク編集</button>
+                                            <button type="submit" name="F_task_update" class="btn btn-warning" value="<?php echo $_GET['task_id']; ?>" onclick="return confirm('この内容でよろしいですか？');"><span class="fa fa-refresh fa-fw"></span>&nbsp;編集</button>
+                                            <button type="button" class="btn btn-danger mb-control" data-box="#message-box-danger"><span class="fa fa-trash-o fa-fw"></span>&nbsp;削除</button>
+                                            <a href="<?php echo $rpsc."task.php"?>" class="btn btn-primary"><span class="fa fa-angle-double-left Close fa-fw"></span>&nbsp;戻る</a>
+                                            <div class="message-box message-box-danger animated fadeIn" id="message-box-danger">
+                                                <div class="mb-container">
+                                                    <div class="mb-middle">
+                                                        <div class="mb-title"><span class="fa fa-trash-o fa-fw"></span> <strong>タイトル：</strong><u><?php echo $_GET['task_title'] ?></u>&nbsp;&nbsp;を削除</div>
+                                                        <div class="mb-content">
+                                                            <p>タスクが削除されます。よろしいですか？再表示はできかねます。</p>
+                                                        </div>
+                                                        <div class="mb-footer">
+                                                            <button class="btn btn-danger btn-lg pull-right mb-control-close">NO</button>
+                                                            <button type="submit" value="<?php echo $_GET['task_id']; ?>" name="F_task_del" class="btn btn-primary btn-lg pull-right">YES</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
+                                    </div>
 <?php else : ?>
+                                    <div class="form-group">
                                         <div class="col-sm-offset-3 col-sm-9">
                                             <button type="submit" name="F_task_submit" class=" btn btn-success" value="<?php echo $_SESSION['s_code']; ?>" onclick="return confirm('この内容でよろしいですか？');">タスク追加</button>
                                         </div>
-<?php endif ?>
                                     </div>
-                                </form>
-                            </div>
+<?php endif ?>
+                            </form>
                         </div>
 
                         <div class="col-md-8">
@@ -168,8 +186,8 @@ EOT;
                             <div class="panel panel-default">
                                 <div class="panel-heading ui-draggable-handle">
                                     <div class="panel-title-box">
-                                        <h3>進行状況</h3>
-                                        <span>各進行状況を確認できます。</span>
+                                        <h3>タスク進行状況</h3>
+                                        <span>各タスク進行状況を確認できます。</span>
                                     </div>
                                     <ul class="panel-controls">
                                         <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
@@ -192,41 +210,68 @@ EOT;
                                             </thead>
                                             <tbody>
 <?php
-    $result = mysqlConSql("SELECT * FROM stasks WHERE s_code = '{$_SESSION['s_code']}' ORDER BY id ASC;");
+    $result = mysqlConSql("SELECT * FROM stasks WHERE s_code = '{$_SESSION['s_code']}' and dis = 0 ORDER BY id ASC;");
     while ($row = $result->fetch_assoc()) {
-        $title_body = nl2br($row['task_body']);
+        $task_title =nl2br(h($row['task_title']));
+        $task_body = nl2br(h($row['task_body']));
+        // $task_body = nl2br($task_body);
+        // $task_body = nl2br($row['task_body']);
         switch ($row['status']) {
             case 0:
                 $status = "START";
+                $status_vol = $row['status_vol'];
+                $label_color = "warning";
                 break;
             case 1:
                 $status = "STOP";
+                $status_vol = $row['status_vol'];
+                $label_color = "default";
                 break;
             case 2:
                 $status = "GOAL";
+                $status_vol = 100;
+                $label_color = "success";
                 break;
             case 3:
                 $status = "FAILED";
+                $status_vol = $row['status_vol'];
+                $label_color = "danger";
                 break;
             default:
                 $status = "START";
+                $status_vol = $row['status_vol'];
+                $label_color = "warning";
                 break;
         }
         echo<<<EOT
                                                 <tr>
-                                                    <td><strong>{$row['task_title']}</strong></td>
-                                                    <td><small>{$title_body}</small></td>
-                                                    <td><span class="label label-info">{$status}</span></td>
+                                                    <td><strong>{$task_title}</strong></td>
+                                                    <td><small>{$task_body}</small></td>
+                                                    <td><span class="label label-{$label_color}">{$status}</span></td>
                                                     <td>
                                                         <div class="progress progress-small progress-striped active">
-                                                            <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {$row['status_vol']}%;">{$row['status_vol']}%</div>
+                                                            <div class="progress-bar progress-bar-{$label_color}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {$status_vol}%;">{$status_vol}%</div>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                            <form action="./form_actions.php" method="POST">
-                                                                <a href="{$rpsc}task.php?task_edit=yes&task_id={$row['id']}&status={$row['status']}&status_vol={$row['status_vol']}&task_title={$row['task_title']}&task_body={$row['task_body']}" class="btn btn-primary btn-xs"><span class="fa fa-edit fa-fw"></span></a>
-                                                                <button type="submit" name="F_del" value="{$row['id']}" class="btn btn-danger btn-xs"><span class="fa fa-trash-o fa-fw"></span></button>
-                                                            </form>
+                                                        <a href="{$rpsc}task.php?task_edit=yes&task_id={$row['id']}&status={$row['status']}&status_vol={$row['status_vol']}&task_title={$task_title}&task_body={$task_body}" class="btn btn-primary btn-xs"><span class="fa fa-edit fa-fw"></span></a>
+                                                        <button type="button" class="btn btn-danger btn-xs mb-control" data-box="#message-box-danger-{$row['id']}"><span class="fa fa-trash-o fa-fw"></span></button>
+                                                        <div class="message-box message-box-danger animated fadeIn" id="message-box-danger-{$row['id']}">
+                                                            <div class="mb-container">
+                                                                <div class="mb-middle">
+                                                                    <div class="mb-title"><span class="fa fa-trash-o fa-fw"></span> <strong>タイトル：</strong><u>{$task_title}</u>&nbsp;&nbsp;を削除</div>
+                                                                    <div class="mb-content">
+                                                                        <p>タスクが削除されます。よろしいですか？再表示はできかねます。</p>
+                                                                    </div>
+                                                                    <div class="mb-footer">
+                                                                        <form action="./form_actions.php" method="POST">
+                                                                            <button class="btn btn-danger btn-lg pull-right mb-control-close">NO</button>
+                                                                            <button type="submit" value="{$row['id']}" name="F_task_del" class="btn btn-primary btn-lg pull-right">YES</button>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </td>
                                                 </tr>
 EOT;

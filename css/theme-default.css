@@ -2390,7 +2390,7 @@ label.valid {
 }
 .label-warning,
 .badge-warning {
-  background-color: #1caf9a;
+  background-color: #fe970a;
 }
 .label-danger,
 .badge-danger {
@@ -2764,7 +2764,7 @@ blockquote.pull-right {
   background-color: #95b75d;
 }
 .progress-bar-warning {
-  background-color: #1caf9a;
+  background-color: #f0ad4e;
 }
 .progress-bar-danger {
   background-color: #E04B4A;

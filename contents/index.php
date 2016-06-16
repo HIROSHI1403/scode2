@@ -168,8 +168,8 @@ EOT;
                                 <div class="panel panel-default">
                                     <div class="panel-heading ui-draggable-handle">
                                         <div class="panel-title-box">
-                                            <h3>進行状況</h3>
-                                            <span>各進行状況を確認できます。※タスクの詳細は<a href="./task.php">Task Control</a>より確認できます。</span>
+                                            <h3>タスク進行状況（最大３つまで表示）</h3>
+                                            <span>各進行状況を確認できます。※その他タスクやタスク詳細は<a href="./task.php">Task Control</a>より確認できます。</span>
                                         </div>
                                         <ul class="panel-controls">
                                             <li><a href="#" class="panel-fullscreen"><span class="fa fa-expand"></span></a></li>
@@ -189,52 +189,50 @@ EOT;
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td><strong>Joli Admin</strong></td>
-                                                        <td><span class="label label-danger">Developing</span></td>
-                                                        <td>
-                                                            <div class="progress progress-small progress-striped active">
-                                                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 85%;">85%</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Gemini</strong></td>
-                                                        <td><span class="label label-warning">Updating</span></td>
-                                                        <td>
-                                                            <div class="progress progress-small progress-striped active">
-                                                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 40%;">40%</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Taurus</strong></td>
-                                                        <td><span class="label label-warning">Updating</span></td>
-                                                        <td>
-                                                            <div class="progress progress-small progress-striped active">
-                                                                <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 72%;">72%</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Leo</strong></td>
-                                                        <td><span class="label label-success">Support</span></td>
-                                                        <td>
-                                                            <div class="progress progress-small progress-striped active">
-                                                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">100%</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><strong>Virgo</strong></td>
-                                                        <td><span class="label label-success">Support</span></td>
-                                                        <td>
-                                                            <div class="progress progress-small progress-striped active">
-                                                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">100%</div>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-
+<?php
+    $result = mysqlConSql("SELECT * FROM stasks WHERE s_code = '{$_SESSION['s_code']}' and dis = 0 ORDER BY id ASC LIMIT 3;");
+    while ($row = $result->fetch_assoc()) {
+        $title_body = nl2br($row['task_body']);
+        switch ($row['status']) {
+            case 0:
+                $status = "START";
+                $status_vol = $row['status_vol'];
+                $label_color = "warning";
+                break;
+            case 1:
+                $status = "STOP";
+                $status_vol = $row['status_vol'];
+                $label_color = "default";
+                break;
+            case 2:
+                $status = "GOAL";
+                $status_vol = 100;
+                $label_color = "success";
+                break;
+            case 3:
+                $status = "FAILED";
+                $status_vol = $row['status_vol'];
+                $label_color = "danger";
+                break;
+            default:
+                $status = "START";
+                $status_vol = $row['status_vol'];
+                $label_color = "warning";
+                break;
+        }
+        echo<<<EOT
+                                                <tr>
+                                                    <td><strong>{$row['task_title']}</strong></td>
+                                                    <td><span class="label label-{$label_color}">{$status}</span></td>
+                                                    <td>
+                                                        <div class="progress progress-small progress-striped active">
+                                                            <div class="progress-bar progress-bar-{$label_color}" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width: {$status_vol}%;">{$status_vol}%</div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+EOT;
+    }
+?>
                                                 </tbody>
                                             </table>
                                         </div>

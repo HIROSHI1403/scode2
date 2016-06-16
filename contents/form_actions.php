@@ -92,6 +92,16 @@ EOT;
 		header("Location:{$rpsc}task.php?task_edit=ok");
 		break;
 
+	case isset($_POST['F_task_del']):
+		$sql = <<<EOT
+		UPDATE stasks
+			SET		dis = 1
+			WHERE	id = '{$_POST['F_task_del']}';
+EOT;
+		mysqlConSql($sql);
+		header("Location:{$rpsc}task.php?task_del=ok");
+		break;
+
 
 	//default
 	default:
